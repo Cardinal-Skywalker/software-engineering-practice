@@ -61,7 +61,7 @@ export default {
 </script>
 
 <style>
-@media (min-width: 1024px){
+@media screen and (orientation: landscape){
     .loginContainer{
         border-radius: 15px;
         background-clip: padding-box;
@@ -83,7 +83,7 @@ export default {
     }
     body{
         background-image: url("../assets/NJUspirit.png") ;
-        background-size: 100%;
+        background-size: 50%;
     }
 }
 
