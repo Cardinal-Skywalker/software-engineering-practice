@@ -1,15 +1,17 @@
+
 <template>
+
     <div>
   <el-form :rules="rules" ref="loginForm" :model="loginForm" class="loginContainer">
      <h3 class="loginTitle">
        系统登录
      </h3>
       <el-form-item prop="username">
-          <el-input type="text" v-model="loginForm.username" placeholder="亲，请输入用户名" >
+          <el-input type="text" v-model="loginForm.username" placeholder="请输入用户名" >
           </el-input>
       </el-form-item>
       <el-form-item prop="password">
-          <el-input type="password" v-model="loginForm.password" placeholder="亲，请输入密码" >
+          <el-input type="password" v-model="loginForm.password" placeholder="请输入密码" >
           </el-input>
       </el-form-item>
       <el-form-item prop="code">
@@ -33,7 +35,7 @@ export default {
           loginForm:{
               username:"admin",
               password:"ssssss",
-              code:''
+              code:'123'
           },
           checked: true,
           rules:{
@@ -61,7 +63,7 @@ export default {
 </script>
 
 <style>
-@media screen and (orientation: landscape){
+@media screen {
     .loginContainer{
         border-radius: 15px;
         background-clip: padding-box;
@@ -82,9 +84,18 @@ export default {
         margin: 0px 0px 15px 0px;
     }
     body{
-        background-image: url("../assets/NJUspirit.png") ;
-        background-size: 50%;
-    }
+        background-image:url("../assets/background.jpg") ;
+        /* background-repeat:"no-repeat"; */
+        background-size: cover;
+        width:"100%";
+        height:"100%";
+        /* position:"fixed"; */
+        top:"0px";
+        left:"0px";
+
+        /* overflow:"hidden"; */
+
+    } 
 }
 
 </style>

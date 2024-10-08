@@ -86,3 +86,21 @@ import SupportIcon from './icons/IconSupport.vue'
     <a href="https://vuejs.org/sponsor/" target="_blank" rel="noopener">becoming a sponsor</a>.
   </WelcomeItem>
 </template>
+
+<style>
+@media screen {
+  
+  body{
+      background-image:url("../assets/background.jpg") ;
+      /* background-repeat:"no-repeat"; */
+      background-size: cover;
+      width:"100%";
+      height:"100%";
+      /* position:"fixed"; */
+      top:"0px";
+      left:"0px";
+      /* overflow:"hidden";  */
+
+  } 
+}
+</style>

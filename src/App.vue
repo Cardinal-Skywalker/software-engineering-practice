@@ -5,18 +5,16 @@ import HelloWorld from './components/HelloWorld.vue'
 
 <template>
   <header>
-    <img alt="NJU logo" class="logo" src="@/assets/NJUlogo.svg" width="125" height="125" />
-
     <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
+      <img alt="NJU logo" class="logo" src="@/assets/NJUlogo.svg" width="125" height="125" />
+      <HelloWorld msg="Welcome!" />
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/login">Login</RouterLink>
+        <RouterLink to="/attendance">点名</RouterLink>
       </nav>
     </div>
   </header>
-
   <RouterView />
 </template>
 
@@ -29,6 +27,10 @@ import HelloWorld from './components/HelloWorld.vue'
 header {
   line-height: 1.5;
   max-height: 100vh;
+  /* background:url("@/assets/background.jpg");
+  width: 100%;
+  height: 100%;
+  background-size: cover; */
 }
 
 .logo {
@@ -37,6 +39,8 @@ header {
 }
 
 nav {
+  /* position: fixed;
+  top: 0; */
   width: 100%;
   font-size: 12px;
   text-align: center;
@@ -76,6 +80,7 @@ nav a:first-of-type {
     display: flex;
     place-items: flex-start;
     flex-wrap: wrap;
+    overflow: hidden;
   }
 
   nav {
