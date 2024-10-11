@@ -66,7 +66,7 @@ export default {
                     if(res.data.code === "0"){
                         sessionStorage.setItem("userInfo",JSON.stringify(res.data.data))
 
-                        this.$router.push("/home");
+                        this.$router.push("/attendance");
                         this.$message.success({
                             message: res.data.msg,
                             type:'success',
