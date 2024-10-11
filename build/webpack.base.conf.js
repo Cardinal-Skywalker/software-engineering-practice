@@ -45,7 +45,15 @@ module.exports = {
         from: /.*/g,
         to: '/index.html'
       }]
-    }
+    },
+    //代理8080
+    proxy: [
+      {
+        context: ['/api'],
+        target: 'http://localhost:8080',
+        pathRewrite: { '^/api': '' },
+      },
+    ],
   },
   resolve: {
     // 快捷访问路径配置

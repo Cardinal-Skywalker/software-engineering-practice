@@ -33,9 +33,9 @@ export default {
       return{
           captchaUrl: "",
           loginForm:{
-              username:"admin",
-              password:"ssssss",
-              code:'123'
+              username:"",
+              password:"",
+              code:"123"
           },
           checked: true,
           rules:{
@@ -51,10 +51,38 @@ export default {
       submitLogin(){
           this.$refs.loginForm.validate((valid) => {
               if (valid) {
-                  alert('提交成功');
+                let _this = this;
+                this.axios({
+                    url: "/api/user/login",
+                    method: "post",
+                    headers:{
+                        "Content-Type":"application/json",
+                    },
+                    params: {
+                        username: _this.loginForm.username,
+                        password: _this.loginForm.password,
+                    },
+                }).then((res)=>{
+                    if(res.data.code === "0"){
+                        sessionStorage.setItem("userInfo",JSON.stringify(res.data.data))
+
+                        this.$router.push("/home");
+                        this.$message.success({
+                            message: res.data.msg,
+                            type:'success',
+                        });
+                    }else{
+                        this.$message({
+                            message: res.data.msg,
+                            type: 'warning',
+                        })
+                    }
+                    // console.log(res);
+                });
               } else {
-                  this.$message.error('登录出错请重新输入');
-                  return false;
+                // console.log('error submit!!');
+                this.$message.error('登录出错请重新输入');
+                return false;
               }
           });
       }
