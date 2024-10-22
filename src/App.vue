@@ -4,92 +4,73 @@ import HelloWorld from './components/HelloWorld.vue'
 </script>
 
 <template>
-  <header>
-    <div class="wrapper">
-      <img alt="NJU logo" class="logo" src="@/assets/NJUlogo.svg" width="125" height="125" />
-      <HelloWorld msg="Welcome!" />
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/user/login">Login</RouterLink>
-        <RouterLink to="/attendance">点名</RouterLink>
-      </nav>
-    </div>
-  </header>
-  <RouterView />
+  <el-container class="home-container" style="width: 100%;">
+    <el-header><!--头部区-->
+      <div>
+        <img src="./assets/NJUlogo.svg" alt="" style="width: 50px; height: 50px; margin-right: 10px;">
+        <span>软件工程实践课堂考核系统</span>
+      </div>
+      <el-button type="info" @click="logout">退出</el-button>  
+    </el-header>
+    <RouterView />
+  </el-container>
 </template>
 
+<script>
+export default {
+    methods:{
+      logout(){
+        localStorage.clear();
+        this.$router.push('/user/login');
+      }
+    }
+};
+</script>
 
-
-<!-- <style>
-
-</style> -->
-<style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-  /* background:url("@/assets/background.jpg");
-  width: 100%;
-  height: 100%;
-  background-size: cover; */
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  /* position: fixed;
-  top: 0; */
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
+<style>
+  .el-header{
+    background-color: #d672d6;
+    display: flex; 
+    justify-content: space-between;
+    padding-left: 0;
+    align-items: center;
+    color: #0e0d0d;
+    font-size: 20px;
+    > div {
+        display: flex;
+        align-items: center;
+        span {
+            margin-left: 15px;
+        }
+    }
   }
 
-  .logo {
-    margin: 0 2rem 0 0;
+  .home-container{
+    height: 100%;
+    width: 100%;
   }
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
+
+
+  body{
+      background-image:url("./assets/background.jpg") ;
+      background-repeat:"no-repeat";
+      background-size: cover;
+      width:"100%";
+      height:"100%";
+      /* position:"fixed"; */
+      top:"0px";
+      left:"0px";
+
+      /* overflow:"hidden"; */
+    } 
+  .element {
     overflow: hidden;
   }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
+  ::-webkit-scrollbar {
+    width: 0 !important;
   }
-}
+  ::-webkit-scrollbar {
+    width: 0 !important;height: 0;
+  }
 </style>

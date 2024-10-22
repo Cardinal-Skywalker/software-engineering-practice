@@ -18,9 +18,23 @@ const router = createRouter({
       component: () => import('../views/LoginView.vue')
     },
     {
-      path: '/attendance',
-      name: 'attendance',
-      component: () => import('../views/TakeAttendanceView.vue')
+      path: '/main',
+      name: 'main',
+      component: () => import('../views/MainView.vue'),
+      redirect: '/attendance',
+      children: [
+        {
+          name:'attendance',
+          path: '/attendance',
+          component: () => import('../views/AttendanceView.vue')
+        },
+        {
+          name:'homework',
+          path: '/homework',
+          component: () => import('../views/HomeworkView.vue')
+        }
+      ]
+
     }
   ]
 })

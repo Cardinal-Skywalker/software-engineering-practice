@@ -66,7 +66,7 @@ export default {
                     if(res.data.code === "0"){
                         sessionStorage.setItem("userInfo",JSON.stringify(res.data.data))
 
-                        this.$router.push("/attendance");
+                        this.$router.push("/main");
                         this.$message.success({
                             message: res.data.msg,
                             type:'success',
@@ -91,7 +91,6 @@ export default {
 </script>
 
 <style>
-@media screen {
     .loginContainer{
         border-radius: 15px;
         background-clip: padding-box;
@@ -111,21 +110,9 @@ export default {
         text-align: left;
         margin: 0px 0px 15px 0px;
     }
-    body{
-        background-image:url("../assets/background.jpg") ;
-        /* background-repeat:"no-repeat"; */
-        background-size: cover;
-        width:"100%";
-        height:"100%";
-        /* position:"fixed"; */
-        top:"0px";
-        left:"0px";
-
-        /* overflow:"hidden"; */
-
-    } 
-}
-
+    .element {
+        overflow: hidden;
+    }
 </style>
 
 <!-- /* <style lang="less" scoped>
