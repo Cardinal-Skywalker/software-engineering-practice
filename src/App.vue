@@ -10,7 +10,9 @@ import HelloWorld from './components/HelloWorld.vue'
         <img src="./assets/NJUlogo.svg" alt="" style="width: 50px; height: 50px; margin-right: 10px;">
         <span>软件工程实践课堂考核系统</span>
       </div>
-      <el-button type="info" @click="logout">退出</el-button>  
+      <el-button class="login-button" type="info" @click="$router.push('/user/login')">登录</el-button> 
+      <el-button class="logout-button" type="info" @click="logout">退出</el-button> 
+     
     </el-header>
     <RouterView />
   </el-container>
@@ -21,7 +23,7 @@ export default {
     methods:{
       logout(){
         localStorage.clear();
-        this.$router.push('/user/login');
+        this.$router.push('/');
       }
     }
 };
@@ -50,6 +52,14 @@ export default {
     width: 100%;
   }
 
+  .login-button{
+    position: fixed;
+    right: 120px;
+  }
+
+  .logout-button{
+    margin-right: 10px;
+  }
 
 
   body{

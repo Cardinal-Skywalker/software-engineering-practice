@@ -26,11 +26,11 @@
           <el-icon :size="20"><DocumentationIcon /></el-icon>
           <span>作业管理</span>
         </el-menu-item>
-        <el-menu-item index="3">
+        <el-menu-item @click="this.$router.push('/import/grade-list')">
           <el-icon :size="20"><Trophy /></el-icon>
           <span>考试录入</span>
         </el-menu-item>
-        <el-menu-item index="4">
+        <el-menu-item @click="this.$router.push('/import/student-list')">
           <el-icon :size="20"><User /></el-icon>
           <span>名单导入</span>
         </el-menu-item>

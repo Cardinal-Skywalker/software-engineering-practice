@@ -32,6 +32,16 @@ const router = createRouter({
           name:'homework',
           path: '/homework',
           component: () => import('../views/HomeworkView.vue')
+        },
+        {
+          name:'grade-list',
+          path: '/import/grade-list',
+          component: () => import('../views/ImportGradeView.vue')
+        },
+        {
+          name:'student-list',
+          path: '/import/student-list',
+          component: () => import('../views/ImportStudentView.vue')
         }
       ]
 
