@@ -22,6 +22,7 @@
       </el-form-item>
       <el-checkbox v-model="checked" class="loginRemember">记住我</el-checkbox>
       <el-button type="primary" style="width:100%" @click="submitLogin">登录</el-button>
+      <p>如果没有账号，请 <el-link type="primary" @click="jumpRegister">注册</el-link>。</p>
   </el-form>
     </div>
 </template>
@@ -48,7 +49,7 @@ export default {
       }
   },
     methods:{
-      submitLogin(){
+    submitLogin(){
           this.$refs.loginForm.validate((valid) => {
               if (valid) {
                 let _this = this;
@@ -85,8 +86,13 @@ export default {
                 return false;
               }
           });
-      }
+      },
+    jumpRegister(){
+        this.$router.push("/user/register");
+    },
     }
+    
+    
 };
 </script>
 
