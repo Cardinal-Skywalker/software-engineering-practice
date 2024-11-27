@@ -10,7 +10,7 @@ import HelloWorld from './components/HelloWorld.vue'
         <img src="./assets/NJUlogo.svg" alt="" style="width: 50px; height: 50px; margin-right: 10px;">
         <span>软件工程实践课堂考核系统</span>
       </div>
-      <el-button class="login-button" type="info" @click="$router.push('/user/login')">登录</el-button> 
+      <el-button v-if="!isLoggedIn" class="login-button" type="info" @click="handleLogin">登录</el-button> 
       <el-button class="logout-button" type="info" @click="logout">退出</el-button> 
      
     </el-header>
@@ -20,11 +20,25 @@ import HelloWorld from './components/HelloWorld.vue'
 
 <script>
 export default {
+    data() {
+      return {
+        // 添加一个布尔变量来控制登录按钮的显示与隐藏
+        isLoggedIn: false
+      };
+    },
     methods:{
       logout(){
         localStorage.clear();
+        this.isLoggedIn = false;
         this.$router.push('/');
-      }
+      },
+      handleLogin() {
+      // 在这里处理登录逻辑
+      // 登录成功后，将 isLoggedIn 设置为 true
+      this.isLoggedIn = true;
+      // 跳转到登录页面
+      this.$router.push('/user/login');
+      },
     }
 };
 </script>
