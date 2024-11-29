@@ -18,6 +18,10 @@
       :collapse="isCollapse" :collapse-transition="false"
       :router="true"
       >
+        <el-menu-item @click="this.$router.push('/classinfo');">
+          <el-icon :size="20"><Timer /></el-icon>
+          <span>班级信息</span>
+        </el-menu-item>
         <el-menu-item @click="this.$router.push('/attendance');">
           <el-icon :size="20"><Timer /></el-icon>
           <span>课堂考勤</span>

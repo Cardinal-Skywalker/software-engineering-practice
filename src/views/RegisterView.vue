@@ -81,9 +81,9 @@ export default {
             if (res.data.code === "0") {
               this.$message.success({
                 message: res.data.msg,
-                type: "success"
+                type: "success",
               });
-              this.$router.push("/login");
+              this.$router.push("/user/login");
             } else {
               this.$message({
                 message: res.data.msg,

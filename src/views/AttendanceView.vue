@@ -27,7 +27,11 @@
         <el-table-column prop="id" label="序号" />
         <el-table-column prop="njuid" label="学号" />
         <el-table-column prop="sname" label="姓名" />
-        <el-table-column prop="photo" label="照片" />
+        <el-table-column
+          :prop="date"
+          :label=attendanceForm.date 
+        >
+        </el-table-column>
       </el-table>
       <!--分页部分 -->
     </el-aside>

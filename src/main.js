@@ -22,3 +22,22 @@ app.mount('#app')
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component)
   }
+  const debounce = (fn, delay) => {
+    let timer;
+    return (...args) => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+      timer = setTimeout(() => {
+        fn(...args);
+      }, delay);
+    };
+  };
+  //防抖函数来减少ResizeObserver回调的触发频率。
+  const _ResizeObserver = window.ResizeObserver;
+  window.ResizeObserver = class ResizeObserver extends _ResizeObserver {
+    constructor(callback) {
+      callback = debounce(callback, 100);
+      super(callback);
+    }
+  };
