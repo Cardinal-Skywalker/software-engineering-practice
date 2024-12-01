@@ -1,6 +1,6 @@
 <template>
     <div>
-      <h2>Vue3 + Element plus 动态表格</h2>
+      <h2>考勤表格</h2>
       <el-button type="primary" @click="renewDataList">获取数据</el-button>
       <el-table
         class="atdInfo-table"

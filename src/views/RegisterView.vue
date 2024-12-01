@@ -41,11 +41,11 @@ export default {
         ],
         password: [
           { required: true, message: "请输入密码", trigger: "blur" },
-          { min: 6, message: "密码长度要大于6", trigger: "blur" }
+          { min: 5, message: "密码长度要大于5", trigger: "blur" }
         ],
         passwordRP: [
           { required: true, message: "请再次输入密码", trigger: "blur" },
-          { min: 6, message: "密码长度要大于6", trigger: "blur" },
+          { min: 5, message: "密码长度要大于5", trigger: "blur" },
           { validator: this.validatePassword, trigger: "blur" }
         ],
         code: [
