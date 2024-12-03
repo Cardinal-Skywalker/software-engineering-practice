@@ -46,6 +46,10 @@
           <el-button type="success" @click="handleSpeak(selectitem.sname)">
           <el-icon><Headset /></el-icon>
           </el-button>
+          <el-button type="success" @click="randChoose()">
+            <el-icon><Orange /></el-icon>
+          </el-button>
+          <el-checkbox v-model="speakFlag" label="自动语音" size="large" />
         </div>
         
       </div>
@@ -73,6 +77,7 @@
         </el-radio-group>
       </div>
       <el-button type="success" @click="autoAttendance">开始点名</el-button>
+      <el-button type="success" @click="stopAttendance">结束点名</el-button>
     </el-main>
   </el-container>
 </template>
@@ -88,6 +93,8 @@ const msg = new SpeechSynthesisUtterance()
 export default {
   setup() {
     const radio1 = ref(null);
+    //自动语音播报控制
+    const speakFlag = ref(false);
 
     return {
       radio1
@@ -102,9 +109,11 @@ export default {
         pagenum: 1,
         pagesize: 2,
       },
+      //学生列表，存储每个学生的信息
       studentlist:[
       ],
       selectionRows: [],
+      //选择的学生对象
       selectitem: {
         id: 0,
         njuid: "00000000000",
@@ -112,12 +121,14 @@ export default {
         photo:"",
         date:"",
       },
+      //点名时的id
       attendanceid : 0,
       attendanceForm:{
         date:"2024/11/27",
         njuid: "",
         status: "",
       },
+      //状态映射
       stateMAP: {
           "1": "出勤",
           "2": "缺席",
@@ -125,36 +136,20 @@ export default {
           "4": "早退",
           "5": "请假",
       },
+      //点名停止标志
       atdStopFlag: false,
-      speakFlag: true,
+      //自动语音播报控制
+      // speakFlag: true,
+      //控制点名语音只播报一次
       onlyonece: false,
     };
   },
   created() {
     this.getUsersList();
   },
-  // watch: {
-  //   // 监听 studentlist 的变化
-  //   studentlist: {
-  //     deep: true,
-  //     handler(newVal, oldVal) {
-  //       this.refreshTable();
-  //     }
-  //   }
-  // },
-  // mounted() {
-  //   this.$nextTick(() => {
-  //     setTimeout(() => {
-  //       // 在这里执行可能会触发重新渲染的操作
-  //     }, 0);
-  //   });
-  //   window.addEventListener('resize', this.handleResize);
-  // },
-  // beforeDestroy() {
-  //   window.removeEventListener('resize', this.handleResize);
-  // },
-  methods: {
 
+  methods: {
+    //异步调用，获取学生列表
     async getUsersList() {
 
     this.axios({
@@ -170,6 +165,15 @@ export default {
                 })
 
     },
+    //随机选择学生方法
+    randChoose(){
+      this.$refs.multipleTable.clearSelection();
+      var randomIndex = Math.floor(Math.random() * this.studentlist.length);
+      this.$refs.multipleTable.toggleRowSelection(this.studentlist[randomIndex], true);
+      this.selectitem = this.studentlist[randomIndex];
+      this.attendanceid = this.selectitem.id-1;
+    },
+
     selectInfo(selection, row) {
           console.log(selection, row);
           // 清除 所有勾选项
@@ -224,6 +228,10 @@ export default {
       synth.cancel(msg) // 取消该次语音播放
     },
 
+    stopAttendance(){
+      this.atdStopFlag = false;
+    },
+    //异步自动点名
   async autoAttendance() {
     this.atdStopFlag = true;
     while (this.atdStopFlag) {
