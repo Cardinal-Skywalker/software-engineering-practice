@@ -11,7 +11,7 @@
     <el-aside width="200px">
       <el-menu 
       :default-active="this.$route.path"
-      background-color="#545c64"
+      background-color="#C55A11"
       text-color="#fff"
       active-text-color="#ffd04b"
       :unique-opened="true" 
@@ -19,19 +19,19 @@
       :router="true"
       >
         <el-menu-item @click="this.$router.push('/attendance');">
-          <el-icon :size="20"><Timer /></el-icon>
+          <el-icon :size="48"><Timer /></el-icon>
           <span>课堂考勤</span>
         </el-menu-item>
         <el-menu-item @click="this.$router.push('/homework')">
-          <el-icon :size="20"><DocumentationIcon /></el-icon>
+          <el-icon :size="48"><DocumentationIcon /></el-icon>
           <span>作业管理</span>
         </el-menu-item>
         <el-menu-item @click="this.$router.push('/import/grade-list')">
-          <el-icon :size="20"><Trophy /></el-icon>
+          <el-icon :size="48"><Trophy /></el-icon>
           <span>考试录入</span>
         </el-menu-item>
         <el-menu-item @click="this.$router.push('/import/student-list')">
-          <el-icon :size="20"><User /></el-icon>
+          <el-icon :size="48"><User /></el-icon>
           <span>名单导入</span>
         </el-menu-item>
       </el-menu>>
@@ -47,10 +47,10 @@
 
 <style scoped>
   .el-aside{
-     background-color: #333744;
+     background-color: #ff8f57;
  }
   .el-main{
-     background-color: #eaedf1;
+     background-color: white;
  }
 </style>
 

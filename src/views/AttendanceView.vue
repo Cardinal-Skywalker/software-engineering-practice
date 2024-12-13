@@ -8,9 +8,9 @@
         @select="selectInfo"
         row-class-name="tableRowClassName"
         :header-cell-style="{
-          background: '#A6A6A6',
-          color: '#FFF',
-          fontSize: '15px',
+          background: '#f0cfb3',
+          color: 'black',
+          fontSize: '22px',
           fontWeight: 'bold',
           textAlign: 'center',
           border: '1px solid #A6A6A6'
@@ -25,6 +25,7 @@
       >
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column prop="id" label="序号" />
+
         <el-table-column prop="njuid" label="学号" />
         <el-table-column prop="sname" label="姓名" />
         <el-table-column prop="photo" label="照片" />
@@ -44,13 +45,18 @@
       <el-form ref="attendanceForm" :model="attendanceForm" :rules="rules">
         <!-- 表单内容 -->
       <el-form-item prop="date">
-          <el-input type="text" v-model="attendanceForm.date" placeholder="请输入日期" >
-          </el-input>
+          <el-date-picker
+            v-model="attendanceForm.date"
+            type="date"
+            placeholder="请选择日期"></el-date-picker>
+          <!-- <el-input type="text" v-model="attendanceForm.date" placeholder="请输入日期" >
+          </el-input> -->
       </el-form-item>
       <el-form-item prop="status">
           <h3>出勤: {{radio1}}</h3>
       </el-form-item>
-        
+
+      <el-progress :percentage="attendancePercentage"></el-progress>
  
       
       </el-form>
@@ -88,6 +94,10 @@ export default {
   },
   name: "Attendance",
   data() {
+    // const today = new Date();
+    // const formattedDate = today.getFullYear() + '-' + 
+    //                       String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+    //                       String(today.getDate()).padStart(2, '0');
     return {
       //获取用户列表的参数对象
       queryInfo: {
@@ -105,10 +115,12 @@ export default {
       },
       attendanceid : 0,
       attendanceForm:{
-        date:"2024/11/27",
+        date:ref(''),
         njuid: "",
         status: "",
-      }
+      },
+      totalCount: 0,      // 总人数
+      attendedCount: 0   // 已点名人数
     };
   },
   created() {
@@ -125,6 +137,11 @@ export default {
   // beforeDestroy() {
   //   window.removeEventListener('resize', this.handleResize);
   // },
+  computed: {
+  attendancePercentage() {
+    return ((this.attendedCount / this.totalCount) * 100).toFixed(2); // 计算进度百分比
+  },
+  },
   methods: {
 
     async getUsersList() {
@@ -136,9 +153,11 @@ export default {
                         "Content-Type":"application/json",
                     },
                 }).then((res)=>{
-                    for(var i=0; i<res.data.data.length; i++)
-                    if(res.data.data[i]!=null)
-                        this.studentlist.push(res.data.data[i]);
+                    for(var i=0; i<res.data.data.length; i++){
+                    if(res.data.data[i]!=null){
+                        res.data.data[i].isAttended = false; // 初始化点名状态
+                        this.studentlist.push(res.data.data[i]);}}
+                    this.totalCount = this.studentlist.length; // 设置总人数
                 })
 
     },
@@ -202,6 +221,12 @@ export default {
         this.sellectid = this.selectitem.id;
         this.attendanceForm.njuid = this.selectitem.njuid;
         this.attendanceForm.status = this.radio1;
+
+          // 更新当前学生的点名状态为已点名
+        this.studentlist[this.attendanceid].isAttended = true;
+        // 更新已点名人数
+        this.attendedCount = this.studentlist.filter(student => student.isAttended).length;
+
         this.attendanceid++;
         this.$refs.multipleTable.clearSelection();
         this.$refs.multipleTable.toggleRowSelection(this.studentlist[this.attendanceid-1], true);
@@ -250,8 +275,20 @@ export default {
 
 
 <style>
+.attendance-view {
+  font-size: 32px;
+  color: white;
+}
+.student-info h3 {
+  font-size: 32px;
+  color: white;
+}
+.el-button {
+  font-size: 24px;
+  color: white;
+}
 ::v-deep .el-table__body tr.current-row>td {
-		background: #BDDBBB !important;
+		background: #ff8f57 !important;
 	}
 .student-table{
     .el-table-column--selection.is-leaf .el-checkbox {
@@ -263,6 +300,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background: #ff8f57;
 }
 .student-info {
   flex: 1;
@@ -273,6 +311,7 @@ export default {
         display: grid;
         grid-template-columns: 1fr 1fr;
         padding: 0;
+        background: #ff8f57;
     }
 </style>
 
