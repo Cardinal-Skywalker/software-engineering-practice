@@ -42,11 +42,11 @@ export default {
         ],
         password: [
           { required: true, message: "请输入密码", trigger: "blur" },
-          { min: 6, message: "密码长度要大于6", trigger: "blur" }
+          { min: 5, message: "密码长度要大于5", trigger: "blur" }
         ],
         passwordRP: [
           { required: true, message: "请再次输入密码", trigger: "blur" },
-          { min: 6, message: "密码长度要大于6", trigger: "blur" },
+          { min: 5, message: "密码长度要大于5", trigger: "blur" },
           { validator: this.validatePassword, trigger: "blur" }
         ],
         code: [
@@ -82,9 +82,9 @@ export default {
             if (res.data.code === "0") {
               this.$message.success({
                 message: res.data.msg,
-                type: "success"
+                type: "success",
               });
-              this.$router.push("/login");
+              this.$router.push("/user/login");
             } else {
               this.$message({
                 message: res.data.msg,
@@ -123,8 +123,7 @@ export default {
   margin: 24px auto 36px auto;
   text-align: center;
   font-size: 40px;
-  background-color: #C55A11;
-  color: aliceblue;
+  color: black;
 }
 .close-button {
   position: absolute;

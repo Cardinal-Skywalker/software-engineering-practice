@@ -28,7 +28,11 @@
 
         <el-table-column prop="njuid" label="学号" />
         <el-table-column prop="sname" label="姓名" />
-        <el-table-column prop="photo" label="照片" />
+        <el-table-column
+          prop="date"
+          :label=attendanceForm.date 
+        >
+        </el-table-column>
       </el-table>
       <!--分页部分 -->
     </el-aside>
@@ -40,7 +44,15 @@
           <h3>序号：{{ this.selectitem.id }}</h3>
           <h3>学号：{{ this.selectitem.njuid }}</h3>
           <h3>姓名：{{ this.selectitem.sname }}</h3>
+          <el-button type="success" @click="handleSpeak(selectitem.sname)">
+          <el-icon><Headset /></el-icon>
+          </el-button>
+          <el-button type="success" @click="randChoose()">
+            <el-icon><Orange /></el-icon>
+          </el-button>
+          <el-checkbox v-model="speakFlag" label="自动语音" size="large" />
         </div>
+        
       </div>
       <el-form ref="attendanceForm" :model="attendanceForm" :rules="rules">
         <!-- 表单内容 -->
@@ -52,9 +64,10 @@
           <!-- <el-input type="text" v-model="attendanceForm.date" placeholder="请输入日期" >
           </el-input> -->
       </el-form-item>
-      <el-form-item prop="status">
+      <!-- <el-form-item prop="status">
           <h3>出勤: {{radio1}}</h3>
-      </el-form-item>
+      </el-form-item> -->
+        
 
       <el-progress :percentage="attendancePercentage"></el-progress>
  
@@ -70,8 +83,8 @@
           <el-radio value="5" size="large">请假</el-radio>
         </el-radio-group>
       </div>
-      <el-button type="success" @click="handleSpeak(selectitem.sname)">Web Speech API</el-button>
-      <el-button type="success" @click="startAttendance">开始点名</el-button>
+      <el-button type="success" @click="autoAttendance">开始点名</el-button>
+      <el-button type="success" @click="stopAttendance">结束点名</el-button>
     </el-main>
   </el-container>
 </template>
@@ -86,7 +99,9 @@ const synth = window.speechSynthesis // 启用文本
 const msg = new SpeechSynthesisUtterance()
 export default {
   setup() {
-    const radio1 = ref('1');
+    const radio1 = ref(null);
+    //自动语音播报控制
+    const speakFlag = ref(false);
 
     return {
       radio1
@@ -105,45 +120,49 @@ export default {
         pagenum: 1,
         pagesize: 2,
       },
-      studentlist:[],
+      //学生列表，存储每个学生的信息
+      studentlist:[
+      ],
       selectionRows: [],
+      //选择的学生对象
       selectitem: {
         id: 0,
         njuid: "00000000000",
         sname: "",
         photo:"",
+        date:"",
       },
+      //点名时的id
       attendanceid : 0,
       attendanceForm:{
         date:ref(''),
         njuid: "",
         status: "",
       },
+      //状态映射
+      stateMAP: {
+          "1": "出勤",
+          "2": "缺席",
+          "3": "迟到",
+          "4": "早退",
+          "5": "请假",
+      },
       totalCount: 0,      // 总人数
-      attendedCount: 0   // 已点名人数
+      attendedCount: 0,   // 已点名人数
+      //点名停止标志
+      atdStopFlag: false,
+      //自动语音播报控制
+      // speakFlag: true,
+      //控制点名语音只播报一次
+      onlyonece: false,
     };
   },
   created() {
     this.getUsersList();
   },
-  // mounted() {
-  //   this.$nextTick(() => {
-  //     setTimeout(() => {
-  //       // 在这里执行可能会触发重新渲染的操作
-  //     }, 0);
-  //   });
-  //   window.addEventListener('resize', this.handleResize);
-  // },
-  // beforeDestroy() {
-  //   window.removeEventListener('resize', this.handleResize);
-  // },
-  computed: {
-  attendancePercentage() {
-    return ((this.attendedCount / this.totalCount) * 100).toFixed(2); // 计算进度百分比
-  },
-  },
-  methods: {
 
+  methods: {
+    //异步调用，获取学生列表
     async getUsersList() {
 
     this.axios({
@@ -161,6 +180,15 @@ export default {
                 })
 
     },
+    //随机选择学生方法
+    randChoose(){
+      this.$refs.multipleTable.clearSelection();
+      var randomIndex = Math.floor(Math.random() * this.studentlist.length);
+      this.$refs.multipleTable.toggleRowSelection(this.studentlist[randomIndex], true);
+      this.selectitem = this.studentlist[randomIndex];
+      this.attendanceid = this.selectitem.id-1;
+    },
+
     selectInfo(selection, row) {
           console.log(selection, row);
           // 清除 所有勾选项
@@ -214,6 +242,26 @@ export default {
       msg.lang = 'zh-CN'
       synth.cancel(msg) // 取消该次语音播放
     },
+
+    stopAttendance(){
+      this.atdStopFlag = false;
+    },
+    //异步自动点名
+  async autoAttendance() {
+    this.atdStopFlag = true;
+    while (this.atdStopFlag) {
+      if(this.speakFlag && this.attendanceid < this.studentlist.length && this.onlyonece == false){
+        this.handleSpeak(this.studentlist[this.attendanceid].sname);
+        this.onlyonece = true;
+      }
+      if (this.radio1 === null) {
+        await new Promise(resolve => setTimeout(resolve, 300)); // 等待300毫秒
+      } else {
+        this.startAttendance();
+      }
+    }
+  },
+
     startAttendance(){
       
       if(this.attendanceid < this.studentlist.length){
@@ -227,10 +275,8 @@ export default {
         // 更新已点名人数
         this.attendedCount = this.studentlist.filter(student => student.isAttended).length;
 
-        this.attendanceid++;
-        this.$refs.multipleTable.clearSelection();
-        this.$refs.multipleTable.toggleRowSelection(this.studentlist[this.attendanceid-1], true);
-        this.radio1 = null;
+        this.studentlist[this.attendanceid]["date"] = this.stateMAP[this.radio1];
+
         this.$refs.attendanceForm.validate((valid) => {
               if (valid) {
                 let _this = this;
@@ -262,13 +308,32 @@ export default {
                 return false;
               }
         });
+        this.radio1 = null;
+        this.$refs.multipleTable.clearSelection();
+
+        this.attendanceid++;
+        this.onlyonece = false;
+        if(this.attendanceid < this.studentlist.length){
+          this.$refs.multipleTable.toggleRowSelection(this.studentlist[this.attendanceid], true);
+        }else{
+          this.attendanceid = 0;
+          this.atdStopFlag = false;
+          this.$refs.multipleTable.toggleRowSelection(this.studentlist[this.attendanceid], true);
+        }
+        
 
       }else{
         this.attendanceid = 0;
+        this.onlyonece = false;
         this.radio1 = null;
       }
-
-    }
+    },
+    // refreshTable() {
+    //   // this.$refs.multipleTable.clearSelection();
+    //   this.$nextTick(() => {
+    //     this.$refs.multipleTable.doLayout();
+    //   });
+    // }
   }
 };
 </script>
