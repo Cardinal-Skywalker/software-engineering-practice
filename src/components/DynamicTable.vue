@@ -1,5 +1,5 @@
 <template>
-    <div class="atdInfo-container">
+    <div>
       <h2>考勤表格</h2>
       <el-button type="primary" @click="renewDataList">获取数据</el-button>
       <el-table
@@ -133,15 +133,4 @@
 
   }
   </script>
-
-<style>
- .atdInfo-container{
-font-family: Avenir, Helvetica, Arial, sans-serif;
--webkit-font-smoothing: antialiased;
--moz-osx-font-smoothing: grayscale;
-text-align: center;
-color: #2c3e50;
-/* margin-top: 60px; */
-} 
-</style>
   
