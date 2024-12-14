@@ -8,38 +8,25 @@
 </script>
 
 <template>
-  <el-container style="height: 100vh;">
-    <!-- 侧边栏 -->
-    <el-aside width="200px" :style="{ backgroundColor: '#34495e' }">
-      <el-menu
-        :default-active="this.$route.path"
-        background-color="#34495e"
-        text-color="#ecf0f1"
-        active-text-color="#f39c12"
-        :unique-opened="true"
-        :collapse="isCollapse"
-        :collapse-transition="false"
-        :router="true"
-        class="menu"
+
       >
         <el-menu-item @click="this.$router.push('/classinfo')">
           <el-icon :size="20"><Timer /></el-icon>
           <span>班级信息</span>
         </el-menu-item>
-        <el-menu-item @click="this.$router.push('/attendance')">
-          <el-icon :size="20"><Timer /></el-icon>
+
           <span>课堂考勤</span>
         </el-menu-item>
         <el-menu-item @click="this.$router.push('/homework')">
-          <el-icon :size="20"><DocumentationIcon /></el-icon>
+          <el-icon :size="48"><DocumentationIcon /></el-icon>
           <span>作业管理</span>
         </el-menu-item>
         <el-menu-item @click="this.$router.push('/import/grade-list')">
-          <el-icon :size="20"><Trophy /></el-icon>
+          <el-icon :size="48"><Trophy /></el-icon>
           <span>考试录入</span>
         </el-menu-item>
         <el-menu-item @click="this.$router.push('/import/student-list')">
-          <el-icon :size="20"><User /></el-icon>
+          <el-icon :size="48"><User /></el-icon>
           <span>名单导入</span>
         </el-menu-item>
       </el-menu>
@@ -53,23 +40,7 @@
 </template>
 
 <style scoped>
-/* 侧边栏样式 */
-.el-aside {
-  background-color: #34495e; /* 深灰色背景 */
-  border-right: 1px solid #2c3e50; /* 更深的边框颜色 */
-  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.2); /* 增加阴影效果 */
-}
 
-/* 菜单项样式 */
-.el-menu {
-  margin-top: 20px;
-}
-
-.el-menu-item {
-  font-size: 16px;
-  font-weight: 500;
-  transition: background-color 0.3s ease, padding-left 0.3s ease; /* 添加过渡效果 */
-}
 
 .el-menu-item:hover {
   background-color: #2c3e50; /* 悬停时的背景色 */

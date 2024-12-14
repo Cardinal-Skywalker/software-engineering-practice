@@ -45,12 +45,12 @@ export default {
 
 <style>
   .el-header{
-    background-color: #d672d6;
+    background-color: #ff8f57;
     display: flex; 
     justify-content: space-between;
     padding-left: 0;
     align-items: center;
-    color: #0e0d0d;
+    color: white;
     font-size: 20px;
     > div {
         display: flex;

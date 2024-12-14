@@ -17,7 +17,8 @@
         <el-input type="text" auto-complete="false" v-model="registerForm.code" placeholder="点击图片更换验证码" style="width: 250px; margin-right: 5px"></el-input>
         <img :src="captchaUrl">
       </el-form-item>
-      <el-button type="primary" style="width: 100%" @click="submitRegister">注册</el-button>
+        <el-button type="primary" style="width: 48%" @click="submitRegister">注册</el-button>
+        <el-button type="primary" style="width: 48%; margin-left: 4%" @click="cancelRegister">取消</el-button>
     </el-form>
   </div>
 </template>
@@ -96,6 +97,9 @@ export default {
           return false;
         }
       });
+    },
+    cancelRegister() {
+      this.$router.push("/user/login");
     }
   }
 };
@@ -103,18 +107,34 @@ export default {
 
 <style>
 .registerContainer {
+  position: relative;
   border-radius: 15px;
   background-clip: padding-box;
   margin: 180px auto;
   width: 350px;
   padding: 15px 35px 15px 35px;
   background: aliceblue;
-  border: 1px solid blueviolet;
-  box-shadow: 0 0 25px #f885ff;
+  border: 1px solid #C55A11;
+  box-shadow: 0 0 25px #C55A11;
 }
 .registerTitle {
-  margin: 0px auto 48px auto;
+  position: relative;
+  border-radius: 15px;
+  margin: 24px auto 36px auto;
   text-align: center;
   font-size: 40px;
+  color: black;
 }
+.close-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: red;
+  border: none;
+  color: #C55A11;
+  align-self: flex-end;
+}
+/* .close-button .el-icon-close {
+  color: black; 
+} */
 </style>

@@ -104,8 +104,8 @@ export default {
         width: 350px;
         padding: 15px 35px 15px 35px;
         background: aliceblue;
-        border:1px solid blueviolet;
-        box-shadow: 0 0 25px #f885ff;
+        border:1px solid #C55A11;
+        box-shadow: 0 0 25px #C55A11;
     }
     .loginTitle{
         margin: 0px auto 48px auto;
