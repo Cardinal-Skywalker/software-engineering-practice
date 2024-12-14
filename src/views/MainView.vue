@@ -8,13 +8,15 @@
 </script>
 
 <template>
-
-      >
+  <el-container>
+    <el-aside>
+      <el-menu>
         <el-menu-item @click="this.$router.push('/classinfo')">
-          <el-icon :size="20"><Timer /></el-icon>
+          <el-icon :size="48"><Timer /></el-icon>
           <span>班级信息</span>
         </el-menu-item>
-
+        <el-menu-item @click="this.$router.push('/attendance')">
+          <el-icon :size="48"><Trophy /></el-icon>
           <span>课堂考勤</span>
         </el-menu-item>
         <el-menu-item @click="this.$router.push('/homework')">
