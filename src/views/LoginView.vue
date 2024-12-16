@@ -14,12 +14,6 @@
           <el-input type="password" v-model="loginForm.password" placeholder="请输入密码" >
           </el-input>
       </el-form-item>
-      <el-form-item prop="code">
-          <el-input type="text" auto-complete="false" v-model="loginForm.code" placeholder="点击图片更换验证码" style="width: 250px;margin-right: 5px">
-          </el-input>
-          <img :src="captchaUrl">
-
-      </el-form-item>
       <el-checkbox v-model="checked" class="loginRemember">记住我</el-checkbox>
       <el-button type="primary" style="width:100%" @click="submitLogin">登录</el-button>
       <p>如果没有账号，请 <el-link type="primary" @click="jumpRegister">注册</el-link>。</p>
@@ -28,22 +22,32 @@
 </template>
 
 <script>
+import { ref, reactive, onMounted } from 'vue'
+import { ElMessage } from 'element-plus'
+import { User, Lock, Key } from '@element-plus/icons-vue'
+import axios from 'axios'
+import { useRouter } from 'vue-router'
+const refreshCaptcha = () => {
+    captchaUrl.value = `/api/captcha?t=${new Date().getTime()}`
+}
+onMounted(() => {
+  refreshCaptcha()
+})
 export default {
     name: "Login",
+
     data(){
       return{
           captchaUrl: "",
           loginForm:{
               username:"",
               password:"",
-              code:"123"
           },
           checked: true,
           rules:{
               username:[{required:true,message:"请输入用户名",trigger:"blur"},{ min: 5, max: 14, message: '长度在 5 到 14 个字符', trigger: 'blur' }
               ],
               password:[{required:true,message:"请输入密码",trigger:"blur"},,{ min: 6,  message: '密码长度要大于6', trigger: 'blur' }],
-              code:[{required:true,message:"请输入验证码",trigger:"blur"}],
           }
 
       }
@@ -96,7 +100,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
     .loginContainer{
         border-radius: 15px;
         background-clip: padding-box;

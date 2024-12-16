@@ -39,7 +39,7 @@
 
     <el-main class="displayer-container" style="width: 35%;">
       <div class="display-container">
-        <el-image v-loading="loading" style="height: 180px; width: 160px;" :src="imgsrc"></el-image>
+        <el-image v-loading="loading" style="height: 200px; width: 180px;" :src="imgsrc"></el-image>
         <div class="student-info">
           <h3>序号：{{ this.selectitem.id }}</h3>
           <h3>学号：{{ this.selectitem.njuid }}</h3>
@@ -74,7 +74,7 @@
       </el-form-item> -->
         
 
-      <el-progress :percentage="attendancePercentage"></el-progress>
+      <el-progress class="progress-bar" type="circle" :width="100" :percentage="attendancePercentage" ></el-progress>
  
       
       </el-form>
@@ -119,6 +119,7 @@ export default {
     //                       String(today.getMonth() + 1).padStart(2, '0') + '-' + 
     //                       String(today.getDate()).padStart(2, '0');
     return {
+      imgsrc: require("../assets/default.png"),
       isStart: true,
       isStop: false,
       //获取用户列表的参数对象
@@ -133,9 +134,9 @@ export default {
       selectionRows: [],
       //选择的学生对象
       selectitem: {
-        id: 0,
-        njuid: "00000000000",
-        sname: "",
+        id: '-',
+        njuid: '-',
+        sname: '-',
         photo:"",
         date:"",
       },
@@ -251,6 +252,8 @@ export default {
             this.selectitem = this.selectionRows[this.selectionRows.length-1];
             this.attendanceid = this.selectitem.id-1;
         }
+        console.log("attendanceid:"+this.attendanceid);
+        console.log("itemid:"+this.selectitem.id);
         },        
     handleSelectionChange(val) {
         this.selectionRows = val;
@@ -318,21 +321,22 @@ export default {
         await new Promise(resolve => setTimeout(resolve, 300)); // 等待300毫秒
       } else {
         count = count+1;
-        this.attendancePercentage = 100 * count / this.studentlist.length; // 计算点名进度
+        this.attendancePercentage = (100 * count / this.studentlist.length).toFixed(2); // 计算点名进度，并保留两位小数
         this.startAttendance();
       }
     }
   },
 
     startAttendance(){
-      
-      if(this.attendanceid < this.studentlist.length&&this.attendanceid>=0){
+        console.log("attendanceid:"+this.attendanceid);
+        console.log("itemid:"+this.selectitem.id);
+      if(this.attendanceid < this.studentlist.length-1&&this.attendanceid>=-1){
         this.selectitem = this.studentlist[this.attendanceid];
-        this.sellectid = this.selectitem.id;
+        this.sellectid = this.selectitem.id+1;
         this.attendanceForm.njuid = this.selectitem.njuid;
         this.attendanceForm.status = this.radio1;
-
-          // 更新当前学生的点名状态为已点名
+        this.selectitem = this.studentlist[this.attendanceid+1];
+        // 更新当前学生的点名状态为已点名
         this.studentlist[this.attendanceid].isAttended = true;
         // 更新已点名人数
         this.attendedCount = this.studentlist.filter(student => student.isAttended).length;
@@ -378,16 +382,74 @@ export default {
         if(this.attendanceid < this.studentlist.length){
           this.$refs.multipleTable.toggleRowSelection(this.studentlist[this.attendanceid], true);
         }else{
+          this.$refs.multipleTable.toggleRowSelection(this.studentlist[this.attendanceid-1], true);
           this.attendanceid = 0;
           this.atdStopFlag = false;
-          this.$refs.multipleTable.toggleRowSelection(this.studentlist[this.attendanceid], true);
+          this.isStart = true;  // 显示“开始点名”按钮
+          this.isStop = false;  // 隐藏“结束点名”按钮
+          // this.$refs.multipleTable.toggleRowSelection(this.studentlist[this.attendanceid], true);
         }
         
 
+      }else if(this.attendanceid == this.studentlist.length-1){
+        this.selectitem = this.studentlist[this.attendanceid];
+        this.attendanceForm.njuid = this.selectitem.njuid;
+        this.attendanceForm.status = this.radio1;
+
+        // 更新当前学生的点名状态为已点名
+        this.studentlist[this.attendanceid].isAttended = true;
+        // 更新已点名人数
+        this.attendedCount = this.studentlist.filter(student => student.isAttended).length;
+
+        this.studentlist[this.attendanceid]["date"] = this.stateMAP[this.radio1];
+
+        this.$refs.attendanceForm.validate((valid) => {
+              if (valid) {
+                let _this = this;
+                this.axios({
+                    url: "/api/student/startAtd",
+                    method: "post",
+                    headers:{
+                        "Content-Type":"application/json",
+                    },
+                    params: {
+                        njuid: _this.attendanceForm.njuid,
+                        status: _this.attendanceForm.status,
+                        date: _this.attendanceForm.date,
+                    },
+                }).then((res)=>{
+                    if(res.data.code === "0"){
+                        // this.$router.push("/main");
+                    }else{
+                        this.$message({
+                            message: res.data.msg,
+                            type: 'warning',
+                        })
+                    }
+                    // console.log(res);
+                });
+              } else {
+                // console.log('error submit!!');
+                this.$message.error('出勤状态录入出错');
+                return false;
+              }
+        });
+        this.radio1 = null;
+        this.$refs.multipleTable.clearSelection();
+
+        this.attendanceid = 0;
+        this.onlyonece = false;
+        this.radio1 = null;
+        this.atdStopFlag = false;
+        this.isStart = true;  // 显示“开始点名”按钮
+        this.isStop = false;  // 隐藏“结束点名”按钮
       }else{
         this.attendanceid = 0;
         this.onlyonece = false;
         this.radio1 = null;
+        this.atdStopFlag = false;
+        this.isStart = true;  // 显示“开始点名”按钮
+        this.isStop = false;  // 隐藏“结束点名”按钮
       }
     },
     // refreshTable() {
@@ -446,6 +508,10 @@ export default {
 .student-info {
   flex: 1;
   margin-left: 20px;
+}
+.progress-bar{
+  stroke-width:20;
+  color:#409EFF;
 }
 
 #attendance {

@@ -27,13 +27,13 @@
           <span>班级信息</span>
         </el-menu-item>
         <el-menu-item @click="this.$router.push('/attendance')">
-          <el-icon :size="22"><Trophy /></el-icon>
+          <el-icon :size="22"><DocumentationIcon /></el-icon>
           <span>课堂考勤</span>
         </el-menu-item>
-        <el-menu-item @click="this.$router.push('/homework')">
+        <!-- <el-menu-item @click="this.$router.push('/homework')">
           <el-icon :size="22"><DocumentationIcon /></el-icon>
           <span>作业管理</span>
-        </el-menu-item>
+        </el-menu-item> -->
         <el-menu-item @click="this.$router.push('/import/grade-list')">
           <el-icon :size="22"><Trophy /></el-icon>
           <span>考试录入</span>

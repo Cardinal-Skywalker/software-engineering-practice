@@ -13,12 +13,8 @@
       <el-form-item prop="passwordRP" label="确认密码">
         <el-input type="password" v-model="registerForm.passwordRP" placeholder="请再次输入密码"></el-input>
       </el-form-item>
-      <el-form-item prop="code" label="验证码">
-        <el-input type="text" auto-complete="false" v-model="registerForm.code" placeholder="点击图片更换验证码" style="width: 250px; margin-right: 5px"></el-input>
-        <img :src="captchaUrl">
-      </el-form-item>
-        <el-button type="primary" style="width: 48%" @click="submitRegister">注册</el-button>
-        <el-button type="primary" style="width: 48%; margin-left: 4%" @click="cancelRegister">取消</el-button>
+      <el-button type="primary" style="width: 48%" @click="submitRegister">注册</el-button>
+      <el-button type="primary" style="width: 48%; margin-left: 4%" @click="cancelRegister">取消</el-button>
     </el-form>
   </div>
 </template>
@@ -33,7 +29,7 @@ export default {
         username: "",
         password: "",
         passwordRP: "",
-        code: "123"
+
       },
       rules: {
         username: [
@@ -49,9 +45,7 @@ export default {
           { min: 5, message: "密码长度要大于5", trigger: "blur" },
           { validator: this.validatePassword, trigger: "blur" }
         ],
-        code: [
-          { required: true, message: "请输入验证码", trigger: "blur" }
-        ]
+       
       }
     };
   },

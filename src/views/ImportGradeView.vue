@@ -1,160 +1,217 @@
 <template>
-  <el-container>
-  <el-aside class="table-container" style="width: 65%;">
-    <el-table
-      class="grade-table"
-      :data="gradelist"
-      ref="multipleTable"
-      @select="selectInfo"
-      row-class-name="tableRowClassName"
-      :header-cell-style="{
-        background: '#A6A6A6',
-        color: '#FFF',
-        fontSize: '15px',
-        fontWeight: 'bold',
-        textAlign: 'center',
-        border: '1px solid #A6A6A6'
-      }"
-      border
-      :table-layout="auto"
-      :cell-style="{ 'text-align': 'center' }"
-      height="800px"
-      :row-key="getRowKey"
-      highlight-current-row
-      style="max-width: 100%; overflow-x: auto;"
-    >
-      <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="id" label="序号" />
-      <el-table-column prop="njuid" label="学号" />
-      <el-table-column prop="sname" label="姓名" />
-      <el-table-column prop="middle" label="期中" />
-      <el-table-column prop="finall" label="期末" />
-    </el-table>
-    <!--分页部分 -->
-  </el-aside>
-
-  <el-main class="displayer-container" style="width: 35%;">
-    <div class="display-container">
-      <el-image v-loading="loading" style="height: 180px; width: 160px;" :src="imgsrc"></el-image>
-      <div class="student-info">
-        <h3>序号：{{ this.selectitem.id }}</h3>
-        <h3>学号：{{ this.selectitem.njuid }}</h3>
-        <h3>姓名：{{ this.selectitem.sname }}</h3>
+  <div class="container">
+    <div class="content-section">
+      <div class="table-section">
+        <el-input
+          v-model="searchText"
+          placeholder="输入学号或姓名搜索"
+          prefix-icon="el-icon-search"
+          class="mb-4">
+        <template #prefix>
+          <el-icon><Search /></el-icon>
+        </template>
+        </el-input>
+        
+        <el-table
+          :data="filteredGradeList"
+          height="600"
+          style="width: 100%"
+          :border="true"
+          :header-cell-style="{ background: '#f0f9eb', color: '#606266' }"
+          @current-change="handleCurrentChange"
+          highlight-current-row
+        >
+          <el-table-column prop="id" label="序号" width="80" />
+          <el-table-column prop="njuid" label="学号" width="120" />
+          <el-table-column prop="sname" label="姓名" width="120" />
+          <el-table-column prop="middle" label="期中" width="120" sortable>
+            <template #default="scope">
+              <el-input
+                v-model="scope.row.middle"
+                @change="validateGrade(scope.row, 'middle')"
+              />
+            </template>
+          </el-table-column>
+          <el-table-column prop="finall" label="期末" width="120" sortable>
+            <template #default="scope">
+              <el-input
+                v-model="scope.row.finall"
+                @change="validateGrade(scope.row, 'finall')"
+              />
+            </template>
+          </el-table-column>
+        </el-table>
       </div>
-      
+      <div class="info-section">
+        <div class="selected-info">
+          <h2>学生信息</h2>
+          <div class="info-item">
+            <label>序号：</label>
+            <span>{{ selectedRow ? selectedRow.id : '-' }}</span>
+          </div>
+          <div class="info-item">
+            <label>学号：</label>
+            <span>{{ selectedRow ? selectedRow.njuid : '-' }}</span>
+          </div>
+          <div class="info-item">
+            <label>姓名：</label>
+            <span>{{ selectedRow ? selectedRow.sname : '-' }}</span>
+          </div>
+          <div class="info-item">
+            <label>期中成绩：</label>
+            <span>{{ selectedRow ? selectedRow.middle : '-' }}</span>
+          </div>
+          <div class="info-item">
+            <label>期末成绩：</label>
+            <span>{{ selectedRow ? selectedRow.finall : '-' }}</span>
+          </div>
+        </div>
+        <div class="button-section">
+          <el-button type="primary" @click="confirmUpload" :loading="isSubmitting" class="action-btn">
+            确认录入
+          </el-button>
+        </div>
+      </div>
     </div>
-
-    <el-form-item prop="gradeinput">
-        <!-- <el-input type="text" placeholder="请输入名称" ></el-input> -->
-        <el-input type="text" placeholder="期中成绩" ></el-input>
-        <el-input type="text" placeholder="期末成绩" ></el-input>
-    </el-form-item>
-      
-    <el-button type="success" >确认录入</el-button>
-    <!-- <el-button type="success" @click="stopAttendance">结束点名</el-button> -->
-  </el-main>
-
-  </el-container>
+  </div>
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { ElMessage } from 'element-plus'
+import axios from 'axios'
 
 export default {
-  data() {
-      return {
-          gradelist:[],
-          selectitem:{
-              id: 0,
-              njuid: "000000000000",
-              sname: "",
-          },
+  setup() {
+    const gradelist = ref([])
+    const selectedRow = ref(null)
+    const searchText = ref('')
+    const isSubmitting = ref(false)
 
-      };
-  },
-  created() {
-      this.getGradeList();
-  },
+    const filteredGradeList = computed(() => {
+      if (!searchText.value) return gradelist.value
+      const lowercasedSearch = searchText.value.toLowerCase()
+      return gradelist.value.filter(
+        student =>
+          student.njuid.toLowerCase().includes(lowercasedSearch) ||
+          student.sname.toLowerCase().includes(lowercasedSearch)
+      )
+    })
 
-  methods: {
-      async getGradeList() {
-      
-      this.axios({
-              url: "/api/student/grade",
-              method: "get",
-              headers:{
-                  "Content-Type":"application/json",
-              },
-          }).then((res)=>{
-              for(var i=0; i<res.data.data.length; i++)
-              if(res.data.data[i]!=null)
-                  this.gradelist.push(res.data.data[i]);
+    const getGradeList = async () => {
+      try {
+        const response = await axios.get("/api/student/grade", {
+          headers: { "Content-Type": "application/json" }
+        })
+        gradelist.value = response.data.data.filter(item => item != null)
+      } catch (error) {
+        console.error('Error fetching grade list:', error)
+        ElMessage.error('获取成绩列表失败')
+      }
+    }
+
+    const handleCurrentChange = (row) => {
+      selectedRow.value = row
+    }
+
+    const validateGrade = (row, field) => {
+      const grade = parseFloat(row[field])
+      if (isNaN(grade) || grade < 0 || grade > 100) {
+        ElMessage.warning('成绩必须是0到100之间的数字')
+        row[field] = ''
+      }
+    }
+
+    const confirmUpload = async () => {
+      isSubmitting.value = true
+      try {
+        for (const student of gradelist.value) {
+          await axios.post("/api/student/gradeimport", null, {
+            headers: { "Content-Type": "application/json" },
+            params: {
+              njuid: student.njuid,
+              middle: student.middle,
+              finall: student.finall,
+            }
           })
-      },
+        }
+        ElMessage.success('成绩更新成功')
+      } catch (error) {
+        console.error('Error updating grades:', error)
+        ElMessage.error('成绩更新失败')
+      } finally {
+        isSubmitting.value = false
+      }
+    }
 
-      selectInfo(selection, row) {
-          console.log(selection, row);
-          // 清除 所有勾选项
-          this.$refs.multipleTable.clearSelection();
-          // 当表格数据都没有被勾选的时候 就返回
-          // 主要用于将当前勾选的表格状态清除
-          if (selection.length == 0) return;
-          this.$refs.multipleTable.toggleRowSelection(row, true);
-          this.selectionRows=selection;
-          if(this.selectionRows.length > 0){
-              this.selectitem = this.selectionRows[this.selectionRows.length-1];
-              this.attendanceid = this.selectitem.id-1;
-          }
-          },        
-      handleSelectionChange(val) {
-          this.selectionRows = val;
-          if(this.selectionRows.length > 0){
-              this.selectid = this.selectionRows[this.selectionRows.length-1].id;
-          }
-          else{
-              this.selectid = 0;
-          }
-          this.attendanceid = this.selectitem.id-1;
-      },
-      getRowKey(row) {
-      return row.id;
-      },
-      tableRowClassName({row, rowIndex}) {
-          if (rowIndex === 1) {
-          return 'warning-row';
-          } else if (rowIndex === 3) {
-          return 'success-row';
-          }
-          return '';
-      },
+    onMounted(getGradeList)
+
+    return {
+      gradelist,
+      selectedRow,
+      searchText,
+      isSubmitting,
+      filteredGradeList,
+      handleCurrentChange,
+      validateGrade,
+      confirmUpload
+    }
   }
 }
-
 </script>
 
-<style>
-::v-deep .el-table__body tr.current-row>td {
-  background: #BDDBBB !important;
-}
-.grade-table{
-  .el-table-column--selection.is-leaf .el-checkbox {
-          display: none;
-        }
-
-}
-.display-container {
-display: flex;
-justify-content: space-between;
-align-items: center;
-}
-.student-info {
-flex: 1;
-margin-left: 20px;
+<style scoped>
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
-/* #attendance {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      padding: 0;
-  } */
+.content-section {
+  display: flex;
+  gap: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.table-section {
+  flex: 2;
+}
+
+.info-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.selected-info {
+  background-color: #f5f7fa;
+  border-radius: 8px;
+  padding: 15px;
+}
+
+.info-item {
+  margin-bottom: 10px;
+}
+
+.info-item label {
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.action-btn {
+  width: 100%;
+}
+
+:deep(.el-table__body tr.current-row > td) {
+  background-color: #e6f7ff !important;
+}
+
+.mb-4 {
+  margin-bottom: 16px;
+  width: 300px;
+}
 </style>

@@ -66,8 +66,7 @@
 			  <span>{{ selectedRow ? selectedRow.name : '-' }}</span>
 			</div>
 		  </div>
-		  <div class="button-section">			
-			<el-upload
+		  <el-upload
 			  action="#"
 			  :auto-upload="false"
 			  :show-file-list="false"
@@ -75,10 +74,11 @@
 			  accept=".xls,.xlsx"
 			  class ="action-upload"
 			>
-			  <el-button type="warning" class="action-btn">
-				导入Excel
+			  <el-button type="warning" class="action-btn circular-btn">
+				导入表格
 			  </el-button>
-			</el-upload>
+		  </el-upload>
+		  <div class="button-section">			
 			<el-button type="primary" @click="confirmUpload" :loading="isSubmitting" class="action-btn">
 			  确认录入
 			</el-button>
@@ -91,7 +91,7 @@
 	</div>
   </template>
   
-  <script setup>
+<script setup>
   import { ref, computed } from 'vue'
   import { ElMessage } from 'element-plus'
   import { Upload } from '@element-plus/icons-vue'
@@ -191,7 +191,7 @@
   } finally {
     isSubmitting.value = false
   }
-}
+  }
   
   const toggleEdit = (row) => {
 	row.isEditing = !row.isEditing
@@ -227,91 +227,118 @@
 	  isEditing: true
 	})
   }
-  </script>
+</script>
   
-  <style scoped>
-  .container {
-	display: flex;
-	flex-direction: column;
-	gap: 20px;
-	padding: 20px;
-	background-color: #f5f7fa;
-	min-height: 100vh;
-  }
-  
-  .content-section {
-	display: flex;
-	gap: 20px;
-	background-color: #ffffff;
-	border-radius: 8px;
-	box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-	padding: 20px;
-  }
-  
-  .table-section {
-	flex: 1;
-  }
-  
-  .info-section {
-	flex: 1;
-	display: flex;
-	flex-direction: column;
-	gap: 20px;
-  }
-  
-  .selected-info {
-	background-color: #f0f9eb;
-	padding: 20px;
-	border-radius: 8px;
-  }
-  
-  .info-item {
-	margin-bottom: 15px;
-	display: flex;
-	align-items: center;
-  }
-  
-  .info-item label {
-	font-weight: bold;
-	width: 60px;
-  }
-  
-  
-  .status-info {
-	color: #67c23a;
-	font-weight: bold;
-  }
-  
-  .button-section {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: 15px;
-	margin-top: auto;
-  }
-  .action-upload {
-	width: 100%;
-  }
-  .action-btn {
-	width: 100%;
-  }
-  
-  :deep(.el-table) {
-	border-radius: 8px;
-	overflow: hidden;
-  }
-  
-  :deep(.el-table__header) {
-	background-color: #f0f9eb;
-  }
-  
-  :deep(.el-input__inner) {
-	text-align: center;
-  }
-  
-  :deep(.el-table .current-row) {
-	background-color: #f0f9eb;
-  }
-  </style>
-  
-  
+<style scoped>
+.container {
+display: flex;
+flex-direction: column;
+gap: 20px;
+padding: 20px;
+background-color: #f5f7fa;
+min-height: 100vh;
+}
+
+.content-section {
+display: flex;
+gap: 20px;
+background-color: #ffffff;
+border-radius: 8px;
+box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+padding: 20px;
+/* align-items: center; */
+justify-content: center;
+}
+
+.table-section {
+flex: 1;
+}
+
+.info-section {
+flex: 1;
+display: flex;
+flex-direction: column;
+gap: 20px;
+}
+
+.selected-info {
+background-color: #f0f9eb;
+padding: 20px;
+border-radius: 8px;
+}
+
+.info-item {
+margin-bottom: 15px;
+display: flex;
+align-items: center;
+}
+
+.info-item label {
+font-weight: bold;
+width: 60px;
+}
+
+
+.status-info {
+color: #67c23a;
+font-weight: bold;
+}
+
+.button-section {
+display: flex;
+
+justify-content: center;
+gap: 15px;
+margin-top: auto;
+}
+.action-upload {
+display: flex; 
+/* align-items: center;  */
+justify-content: center;
+width: 100%;
+}
+.action-btn {
+width: 100%;
+
+}
+.circular-btn {
+width: 100px; /* 设置按钮的宽度 */
+height: 100px; /* 设置按钮的高度，使其与宽度相等 */
+border-radius: 50%; /* 设置边框半径为50%以创建圆形 */
+display: flex; 
+align-items: center; 
+padding: 0; /* 移除内边距 */
+font-size: 14px; /* 调整字体大小 */
+color: white; /* 文字颜色 */
+background-color: #eb5612;
+cursor: pointer; /* 鼠标悬停时显示手形图标 */
+transition: background-color 0.3s, transform 0.3s; /* 平滑过渡效果 */
+}
+/* 鼠标悬停时的样式 */
+.circular-btn:hover {
+  background-color: #ff6600; /* 悬停时的背景颜色 */
+}
+
+/* 鼠标点击时的样式 */
+.circular-btn:active {
+  background-color: #c44500; /* 点击时的背景颜色 */
+  transform: scale(0.95); /* 点击时稍微缩小按钮 */
+}
+:deep(.el-table) {
+border-radius: 8px;
+overflow: hidden;
+}
+
+:deep(.el-table__header) {
+background-color: #f0f9eb;
+}
+
+:deep(.el-input__inner) {
+text-align: center;
+}
+
+:deep(.el-table .current-row) {
+background-color: #f0f9eb;
+}
+</style>
+
