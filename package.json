@@ -19,7 +19,8 @@
     "vue": "^3.4.21",
     "vue-axios": "^3.5.2",
     "vue-project": "file:",
-    "vue-router": "^4.3.0"
+    "vue-router": "^4.3.0",
+    "xlsx": "^0.18.5"
   },
   "browserslist": [
     "> 0.1%",

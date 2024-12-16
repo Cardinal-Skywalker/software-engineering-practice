@@ -44,25 +44,30 @@
           <h3>序号：{{ this.selectitem.id }}</h3>
           <h3>学号：{{ this.selectitem.njuid }}</h3>
           <h3>姓名：{{ this.selectitem.sname }}</h3>
+          <div class="button-checkbox-container">
+        <div class="button-container">
           <el-button type="success" @click="handleSpeak(selectitem.sname)">
-          <el-icon><Headset /></el-icon>
+            <el-icon><Headset /></el-icon>
           </el-button>
           <el-button type="success" @click="randChoose()">
             <el-icon><Orange /></el-icon>
           </el-button>
-          <el-checkbox v-model="speakFlag" label="自动语音" size="large" />
         </div>
+        <el-checkbox class="checkbox" v-model="speakFlag" label="自动语音" size="large" />
+      </div>
+    </div>
         
       </div>
       <el-form ref="attendanceForm" :model="attendanceForm" :rules="rules">
         <!-- 表单内容 -->
       <el-form-item prop="date">
           <el-date-picker
-            v-model="attendanceForm.date"
+            v-model="attendanceForm.rawDate"
             type="date"
             placeholder="请选择日期"></el-date-picker>
           <!-- <el-input type="text" v-model="attendanceForm.date" placeholder="请输入日期" >
           </el-input> -->
+          <!-- <div>{{ formattedDate }}</div> -->
       </el-form-item>
       <!-- <el-form-item prop="status">
           <h3>出勤: {{radio1}}</h3>
@@ -83,8 +88,8 @@
           <el-radio value="5" size="large">请假</el-radio>
         </el-radio-group>
       </div>
-      <el-button type="success" @click="autoAttendance">开始点名</el-button>
-      <el-button type="success" @click="stopAttendance">结束点名</el-button>
+      <el-button v-if="isStart" type="success" @click="autoAttendance">开始点名</el-button>
+      <el-button v-if="isStop" type="success" @click="stopAttendance">结束点名</el-button>
     </el-main>
   </el-container>
 </template>
@@ -114,6 +119,8 @@ export default {
     //                       String(today.getMonth() + 1).padStart(2, '0') + '-' + 
     //                       String(today.getDate()).padStart(2, '0');
     return {
+      isStart: true,
+      isStop: false,
       //获取用户列表的参数对象
       queryInfo: {
         query: "",
@@ -133,12 +140,15 @@ export default {
         date:"",
       },
       //点名时的id
-      attendanceid : 0,
+      attendanceid : -1,
       attendanceForm:{
-        date:ref(''),
+        // date:ref(''),
+        rawDate: '', // 用于存储原始日期
+        date: this.formattedDate(),     // 用于存储格式化后的日期
         njuid: "",
         status: "",
       },
+      attendancePercentage: 0, // 点名进度百分比
       //状态映射
       stateMAP: {
           "1": "出勤",
@@ -157,11 +167,50 @@ export default {
       onlyonece: false,
     };
   },
+  // computed: {
+  //   formattedDate() {
+  //     if (!this.attendanceForm.date) return '';
+  //     const date = new Date(this.attendanceForm.date);
+  //     const year = date.getFullYear();
+  //     const month = String(date.getMonth() + 1).padStart(2, '0');
+  //     const day = String(date.getDate()).padStart(2, '0');
+  //     return `${year}/${month}/${day}`;
+  //   }
+  // },
+  watch: {
+    'attendanceForm.rawDate'(newDate) {
+      if (!newDate) {
+        this.attendanceForm.date = '';
+        return;
+      }
+      const date = new Date(newDate);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      this.attendanceForm.date = `${year}/${month}/${day}`;
+    }
+  },
   created() {
     this.getUsersList();
   },
 
   methods: {
+    formattedDate() {
+      // if (!this.attendanceForm.date) return '';
+      const date = new Date();
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}/${month}/${day}`;
+    },
+    // setDefaultDate() {
+    //   const date = new Date(); // 获取当前日期
+    //   const year = date.getFullYear();
+    //   const month = String(date.getMonth() + 1).padStart(2, '0');
+    //   const day = String(date.getDate()).padStart(2, '0');
+    //   this.attendanceForm.date = `${year}/${month}/${day}`; // 赋值给 date
+    // },
+
     //异步调用，获取学生列表
     async getUsersList() {
 
@@ -244,11 +293,22 @@ export default {
     },
 
     stopAttendance(){
+      this.isStart = true;  // 显示“开始点名”按钮
+      this.isStop = false;  // 隐藏“结束点名”按钮
       this.atdStopFlag = false;
     },
     //异步自动点名
   async autoAttendance() {
+    this.isStart = false; // 隐藏“开始点名”按钮
+    this.isStop = true;   // 显示“结束点名”按钮
     this.atdStopFlag = true;
+    if(this.attendanceid < this.studentlist.length&&this.attendanceid>=0){
+      ;
+    }else{
+      this.attendanceid = 0;
+      this.$refs.multipleTable.toggleRowSelection(this.studentlist[this.attendanceid], true);
+    }
+    let count = 0;
     while (this.atdStopFlag) {
       if(this.speakFlag && this.attendanceid < this.studentlist.length && this.onlyonece == false){
         this.handleSpeak(this.studentlist[this.attendanceid].sname);
@@ -257,6 +317,8 @@ export default {
       if (this.radio1 === null) {
         await new Promise(resolve => setTimeout(resolve, 300)); // 等待300毫秒
       } else {
+        count = count+1;
+        this.attendancePercentage = 100 * count / this.studentlist.length; // 计算点名进度
         this.startAttendance();
       }
     }
@@ -264,7 +326,7 @@ export default {
 
     startAttendance(){
       
-      if(this.attendanceid < this.studentlist.length){
+      if(this.attendanceid < this.studentlist.length&&this.attendanceid>=0){
         this.selectitem = this.studentlist[this.attendanceid];
         this.sellectid = this.selectitem.id;
         this.attendanceForm.njuid = this.selectitem.njuid;
@@ -352,6 +414,20 @@ export default {
   font-size: 24px;
   color: white;
 }
+
+.button-checkbox-container {
+  display: flex;
+  flex-direction: column; /* 使按钮和复选框垂直排列 */
+  align-items: center; /* 水平居中对齐 */
+  gap: 10px; /* 按钮和复选框之间的间距 */
+}
+
+.button-container {
+  display: flex;
+  flex-direction: row; /* 使按钮水平排列 */
+  gap: 10px; /* 按钮之间的间距 */
+}
+
 ::v-deep .el-table__body tr.current-row>td {
 		background: #ff8f57 !important;
 	}
