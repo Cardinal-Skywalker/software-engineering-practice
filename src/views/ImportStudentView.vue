@@ -171,7 +171,7 @@
     formData.append('file', xlsFile)
 
     // 发送 XLS 文件到后端
-    const response = await fetch('/api/student/import', {
+    const response = await fetch('http://103.133.176.168:8080/student/import', {
       method: 'POST',
       body: formData
     })

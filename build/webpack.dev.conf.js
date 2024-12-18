@@ -7,7 +7,15 @@ module.exports = merge(BaseWebpackConf, {
     hot: true, // 模块热加载
     open: true, // 编译结束后，自动打开浏览器
     port: 8081, // 设置本地端口
-    host: "localhost" // 设置本地url    
+    host: "localhost", // 设置本地url   
+    //代理8080
+    proxy: [
+      {
+        context: ['/api'],
+        target: 'http://103.133.176.168:8080',
+        pathRewrite: { '^/api': '' },
+      },
+    ], 
   },
   plugins: [
     new HtmlWebpackPlugin({

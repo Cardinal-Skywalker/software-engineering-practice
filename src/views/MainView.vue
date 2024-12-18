@@ -1,44 +1,35 @@
-<script setup>
-  import { ref } from 'vue';
-  import DocumentationIcon from '../components/icons/IconDocumentation.vue';
-  import { RouterLink, RouterView } from 'vue-router';
-
-  // 侧边栏折叠状态
-  const isCollapse = ref(false);
-</script>
-
 <template>
   <el-container style="height: 100vh;">
     <!-- 侧边栏 -->
     <el-aside :style="{ background: 'linear-gradient(135deg, #C55A11, #8B4513)' }">
       <el-menu
-        :default-active="this.$route.path"
+        :default-active="route.path"
         background-color="#C55A11"
         text-color="#ecf0f1"
         active-text-color="#FFD700"
         :unique-opened="true"
-        :collapse="isCollapse"
+        :collapse="false"
         :collapse-transition="false"
         :router="true"
         class="menu"
       >
-        <el-menu-item @click="this.$router.push('/classinfo')">
+        <el-menu-item @click="router.push('/classinfo')">
           <el-icon :size="22"><Timer /></el-icon>
           <span>班级信息</span>
         </el-menu-item>
-        <el-menu-item @click="this.$router.push('/attendance')">
+        <el-menu-item @click="router.push('/attendance')">
           <el-icon :size="22"><DocumentationIcon /></el-icon>
           <span>课堂考勤</span>
         </el-menu-item>
-        <!-- <el-menu-item @click="this.$router.push('/homework')">
+        <!-- <el-menu-item @click="router.push('/homework')">
           <el-icon :size="22"><DocumentationIcon /></el-icon>
           <span>作业管理</span>
         </el-menu-item> -->
-        <el-menu-item @click="this.$router.push('/import/grade-list')">
+        <el-menu-item @click="router.push('/import/grade-list')">
           <el-icon :size="22"><Trophy /></el-icon>
           <span>考试录入</span>
         </el-menu-item>
-        <el-menu-item @click="this.$router.push('/import/student-list')">
+        <el-menu-item @click="router.push('/import/student-list')">
           <el-icon :size="22"><User /></el-icon>
           <span>名单导入</span>
         </el-menu-item>
@@ -52,7 +43,21 @@
   </el-container>
 </template>
 
-<style scoped>
+<script setup>
+  import { ref } from 'vue';
+  import { useRouter, useRoute } from 'vue-router';
+  import DocumentationIcon from '../components/icons/IconDocumentation.vue';
+  import { RouterView } from 'vue-router';
+
+  // 侧边栏折叠状态
+  const isCollapse = ref(false);
+
+  // 使用useRouter和useRoute
+  const router = useRouter();
+  const route = useRoute();
+</script>
+
+<style>
 /* 侧边栏样式 */
 .el-aside {
   background: linear-gradient(135deg, #C55A11, #8B4513); /* 渐变背景 */
@@ -108,20 +113,5 @@
   font-weight: 700; /* 高亮项加粗 */
   box-shadow: 0 0 12px rgba(255, 215, 0, 0.7); /* 高亮时加上光晕效果 */
   transform: scale(1.05); /* 高亮项放大效果 */
-}
-
-/* 响应式布局，侧边栏在小屏幕上折叠 */
-@media screen and (max-width: 1024px) {
-  .el-aside {
-    width: 80px; /* 小屏幕下侧边栏缩小 */
-  }
-
-  .el-menu-item span {
-    display: none; /* 小屏幕下隐藏文字 */
-  }
-
-  .el-menu-item {
-    text-align: center; /* 中央对齐图标 */
-  }
 }
 </style>

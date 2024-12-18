@@ -216,7 +216,7 @@ export default {
     async getUsersList() {
 
     this.axios({
-                    url: "/api/student/attendance",
+                    url: "http://103.133.176.168:8080/student/attendance",
                     method: "get",
                     headers:{
                         "Content-Type":"application/json",
@@ -347,7 +347,7 @@ export default {
               if (valid) {
                 let _this = this;
                 this.axios({
-                    url: "/api/student/startAtd",
+                    url: "http://103.133.176.168:8080/student/startAtd",
                     method: "post",
                     headers:{
                         "Content-Type":"application/json",
@@ -407,7 +407,7 @@ export default {
               if (valid) {
                 let _this = this;
                 this.axios({
-                    url: "/api/student/startAtd",
+                    url: "http://103.133.176.168:8080/student/startAtd",
                     method: "post",
                     headers:{
                         "Content-Type":"application/json",

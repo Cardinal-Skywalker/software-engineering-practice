@@ -119,7 +119,7 @@ export default {
     async getData() {
       if (this.isDataLoaded) return;
       try {
-        const response = await this.axios.get("/api/student/attendanceInfo");
+        const response = await this.axios.get("http://103.133.176.168:8080/student/attendanceInfo");
         this.resultList = response.data.data.filter(item => item != null);
         if (this.resultList.length > 0) {
           const dates = this.resultList[0].states || {};

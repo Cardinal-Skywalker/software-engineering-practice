@@ -47,13 +47,14 @@ module.exports = {
       }]
     },
     //代理8080
-    proxy: [
-      {
-        context: ['/api'],
-        target: 'http://localhost:8080',
-        pathRewrite: { '^/api': '' },
-      },
-    ],
+    // proxy: [
+    //   {
+    //     context: ['/api'],
+    //     target: 'http://103.133.176.168:8080',
+    //     // changeOrigin: true,
+    //     pathRewrite: { '^/api': '' },
+    //   },
+    // ],
   },
   resolve: {
     // 快捷访问路径配置

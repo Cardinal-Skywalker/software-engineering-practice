@@ -30,7 +30,7 @@ export default {
 
 .background-image {
   position: relative;
-  background-image: url('../assets/Home_BackGround.png');
+  background-image: url('../assets/Home_BackGround.jpg');
   background-size: cover;
   background-position: center;
   width: 100%;

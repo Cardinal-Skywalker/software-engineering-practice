@@ -100,7 +100,7 @@ export default {
 
     const getGradeList = async () => {
       try {
-        const response = await axios.get("/api/student/grade", {
+        const response = await axios.get("http://103.133.176.168:8080/student/grade", {
           headers: { "Content-Type": "application/json" }
         })
         gradelist.value = response.data.data.filter(item => item != null)
@@ -126,7 +126,7 @@ export default {
       isSubmitting.value = true
       try {
         for (const student of gradelist.value) {
-          await axios.post("/api/student/gradeimport", null, {
+          await axios.post("http://103.133.176.168:8080/student/gradeimport", null, {
             headers: { "Content-Type": "application/json" },
             params: {
               njuid: student.njuid,

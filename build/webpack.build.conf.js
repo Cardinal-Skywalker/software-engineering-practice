@@ -41,6 +41,14 @@ module.exports = merge(BaseWebpackConf, {
     filename: "assets/js/[name].[contenthash:6].js",
     clean: true
   },
+  // devServer: {
+  //   proxy:{
+  //     context: ['/api'],
+  //     target: 'http://103.133.176.168:8080',
+  //     changeOrigin: true,
+  //     pathRewrite: { '^/api': '' },
+  //   }
+  // },
   optimization: {
     minimize: true,
     minimizer: [

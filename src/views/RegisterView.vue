@@ -62,7 +62,7 @@ export default {
         if (valid) {
           let _this = this;
           this.axios({
-            url: "/api/user/register",
+            url: "http://103.133.176.168:8080/user/register",
             method: "post",
             headers: {
               "Content-Type": "application/json"

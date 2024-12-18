@@ -118,7 +118,7 @@ export default {
 }
 
   body{
-      background-image:url("./assets/Home_BackGround.png") ;
+      background-image:url("./assets/Home_BackGround.jpg") ;
       background-repeat:"no-repeat";
       background-size: cover;
       width:"100%";

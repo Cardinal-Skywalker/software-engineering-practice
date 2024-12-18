@@ -28,7 +28,7 @@ import { User, Lock, Key } from '@element-plus/icons-vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
 const refreshCaptcha = () => {
-    captchaUrl.value = `/api/captcha?t=${new Date().getTime()}`
+    captchaUrl.value = `http://103.133.176.168:8080/captcha?t=${new Date().getTime()}`
 }
 onMounted(() => {
   refreshCaptcha()
@@ -58,7 +58,7 @@ export default {
               if (valid) {
                 let _this = this;
                 this.axios({
-                    url: "/api/user/login",
+                    url: "http://103.133.176.168:8080/user/login",
                     method: "post",
                     headers:{
                         "Content-Type":"application/json",
